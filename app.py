@@ -3,6 +3,8 @@ import yfinance as yf
 import google.generativeai as genai
 import pandas as pd
 import pandas_ta as ta
+import random
+import time
 
 # 1. 配置 Gemini API
 api_key = st.secrets.get("GEMINI_API_KEY")
@@ -45,6 +47,7 @@ elif auto_analyze:
         # 為了避開 API 頻率限制，我們隨機抽樣或只掃描前 20 支最熱門的
         for t in TW_50_LIST[:25]: 
             try:
+                time.sleep(0.5)
                 s = yf.Ticker(t)
                 hist = s.history(period="1mo")
                 if len(hist) > 15:
@@ -59,13 +62,22 @@ elif auto_analyze:
         st.success(f"✅ 掃描完成！今日推薦關注：{', '.join(tickers)}")
 
 # --- 4. 數據分析與 AI 生成 (僅在 tickers 有值時執行) ---
+@st.cache_data(ttl=3600)  # 數據會存在快取中 1 小時，這段期間不會重複抓取
+def get_stock_data(ticker):
+    stock = yf.Ticker(ticker)
+    # 抓取 6 個月的歷史數據
+    df = stock.history(period="6mo")
+    # 抓取基本面資訊
+    info = stock.info
+    return df, info
+    
 if tickers:
     all_data_summary = ""
     cols = st.columns(len(tickers))
     
     for i, ticker in enumerate(tickers):
-        stock = yf.Ticker(ticker)
-        df = stock.history(period="6mo")
+        df, info = get_stock_data(ticker)
+        if not df.empty:
         
         # --- 抓取基本面數據 ---
         info = stock.info
@@ -185,4 +197,5 @@ if tickers:
         use_container_width=True # 讓按鈕變寬，更好點擊
 
     )
+
 
