@@ -6,7 +6,7 @@ import pandas_ta as ta
 
 # 1. 配置 Gemini API
 api_key = st.secrets.get("GEMINI_API_KEY")
-genai.configure(api_key)
+genai.configure(api_key=api_key)
 model = genai.GenerativeModel(
     model_name='gemini-2.5-flash'
 )
@@ -185,3 +185,4 @@ if tickers:
         use_container_width=True # 讓按鈕變寬，更好點擊
 
     )
+
