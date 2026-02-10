@@ -80,10 +80,10 @@ if tickers:
         if not df.empty:
         
         # --- 抓取基本面數據 ---
-        info = stock.info
-        pe = info.get('trailingPE', 'N/A')  # 本益比
-        pb = info.get('priceToBook', 'N/A') # 股價淨值比
-        rev_growth = info.get('revenueGrowth', 0) * 100 # 營收成長率
+            info = stock.info
+            pe = info.get('trailingPE', 'N/A')  # 本益比
+            pb = info.get('priceToBook', 'N/A') # 股價淨值比
+            rev_growth = info.get('revenueGrowth', 0) * 100 # 營收成長率
         
         if not df.empty:
             # --- 修正縮排的計算區塊 ---
@@ -197,5 +197,6 @@ if tickers:
         use_container_width=True # 讓按鈕變寬，更好點擊
 
     )
+
 
 
